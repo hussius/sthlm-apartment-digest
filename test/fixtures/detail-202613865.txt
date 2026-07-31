@@ -1,0 +1,168 @@
+
+            
+                
+
+    
+        
+                            För att anmäla intresse på bostaden behöver du vara registrerad som bostadssökande och vara inloggad.
+                        
+                                
+                                    Logga in
+                                
+                                    
+                                        
+                                            Se villkoren för bostaden
+                                            
+                                                
+                                                
+                                            
+                                        
+                                    
+
+                        
+        
+    
+
+
+
+                    
+                        
+                            
+                                
+                                    
+                                    
+                                    
+                                
+                            
+
+                            Planlösning
+                        
+
+                        
+                                
+                                    Visa planritning
+                                
+                        
+                    
+            
+
+            
+
+                        
+                            Egenskaper
+
+                            
+                                    
+                                        
+                                            Kök
+                                        
+                                    
+                                    
+                                        
+                                            Badrum
+                                        
+                                    
+                                    
+                                        
+                                            Hiss saknas, lägenheten nås endast via trappor
+                                        
+                                    
+                                    
+                                        
+                                            Ej balkong
+                                        
+                                    
+                                    
+                                        
+                                            Säkerhetsdörr
+                                        
+                                    
+                            
+                        
+            
+
+            
+                
+                    Beskrivning av bostaden
+
+                    Om bostaden
+Vid kontraktsskrivning kan du behöva uppvisa tecknad hemförsäkring för din nya bostad.
+Om hyran
+Kostnad för hushållsel tillkommer.
+Förmedlingsinformation
+Viktig information om visning eller förmedling kan skickas ut via sms. Uppdatera dina kontaktuppgifter på Mina sidor.
+Om hyresvärden har villkor om antal hushållsmedlemmar hämtar och behandlar vi familjeuppgifter om dig, din registrerade medboende och eventuella barn.
+Observera att om inflyttningsdatumet infaller på en helgdag eller en röd dag sker inflyttning nästkommande vardag.
+Om din anställning inte är i Stockholmsområdet behöver du visa att din arbetsplats ligger inom pendlingsavstånd från bostaden.
+Om du har vuxna barn som ska bo i hushållet behöver de beställa ett familjebevis från Skatteverket här.
+Visningsinformation
+Om du är en av dem som blir aktuell för en bostad kommer du att bli inbjuden till visning eller få ny kompletterande information i form av bilder/video eller rangordning. Visningsinbjudan kommer att synas på Mina sidor samt skickas på mejl om du har fyllt i en aktuell mejladress. Om du har skyddade personuppgifter får du endast visningsinbjudan via Mina sidor.
+Boendereferenser
+Om du blir aktuell för bostaden behöver du kontakta din nuvarande hyresvärd och godkänna att denne lämnar ut boendereferenser om dig till den nya hyresvärden.
+
+                
+
+                Visa mer
+            
+
+            Kontrollera att du uppfyller hyresvärdens villkor
+
+                
+                    Vi jämför hyresvärdens villkor för bostaden med de uppgifter som du har angett hos oss. Logga in för att se om du har möjlighet att göra en intresseanmälan.
+                
+                
+                    Logga in
+                
+            
+        
+
+        
+        
+            Villkor för att anmäla intresse
+                För att kunna anmäla intresse behöver nedan villkor vara uppfyllda.
+                
+                        Lägsta årsinkomst: 420000 kronor
+                        Max antal hushållsmedlemmar: 3
+                
+        
+        
+            Villkor för att skriva kontrakt
+                
+                        Hyresvärden accepterar inga betalningsanmärkningar eller oreglerade skulder.
+                        Din totala årsinkomst före skatt behöver vara minst 3 gånger årshyran.
+                        Hyresvärden tillämpar en särskild inkomstregel för ålderspensionärer som innebär att din totala inkomst brutto skall uppgå till lägst 2,5 gånger årshyran.
+                        Hyresvärdens villkor är att du har regelbunden inkomst från till exempel anställning, pension eller eget företag. Du behöver kunna styrka att din inkomst når upp till inkomstvillkoret minst 6 månader från inflyttningsdatumet. Om du har tidsbegränsad anställning ska du kunna visa att inkomsten varar minst 12 månader framåt från inflyttningsdatumet. Om du är provanställd behöver du ha en borgensman. Behovsanställning och försörjningsstöd godkänns inte.
+                        Sammanslagning av inkomst kan godtas för sammanboende par som varit folkbokförda på samma adress minst 6 månader alternativ stått som medboende i minst 6 månader. Huvudsökande behöver själv uppnå minst 50% av inkomstkravet.
+                        Om bostad innehas behöver du visa uppsagt hyreskontrakt alternativt försäljningsdokument/mäklaruppdrag för villa eller bostadsrätt. Om du lämnar in ett mäklaruppdrag kommer du att behöva visa ett försäljningsdokument 6 månader efter inflyttningsdatum.
+                        Vid skilsmässa krävs kvitto från tingsrätten på ansökan om skilsmässa.
+                        Hyresvärden kräver att köande eller ombud varit på visningen och sett den aktuella lägenheten.
+                        Max antal boende i bostaden är 2 vuxna och 1 barn. 
+                
+        
+
+
+
+
+    .villkor-content .villkor-header-uppfylls button {
+        background-image: url("data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30' fill='none'%3E%3Ccircle cx='14.5317' cy='14.7219' r='14.5317' fill='%2386C900'/%3E%3Cpath d='M19.9007 10.2998L12.2992 18.1975L8.84399 14.6076' stroke='white' stroke-width='3.73049' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position-y: 50%;
+        background-position-x: 5px;
+    }
+    .villkor-content .villkor-header-uppfylls-ej button {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30' fill='none'%3E%3Ccircle cx='15.4692' cy='14.6584' r='14.5317' fill='%23D12327'/%3E%3Cpath d='M19.9375 10.1267L10.9375 19.1267M10.9375 10.1267L19.9375 19.1267' stroke='white' stroke-width='2.7975' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position-y: 50%;
+        background-position-x: 5px;
+    }
+    .villkor-content .villkor-accordion-accordion__header[aria-expanded="false"]:after {
+        content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='14' viewBox='0 0 24 14' fill='none'%3E%3Cpath d='M2 1.72192L12 11.7219L22 1.72192' stroke='%2348484E' stroke-width='3.33333' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+    .villkor-content .villkor-accordion-accordion__header[aria-expanded="true"]:after {
+        content: url("data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='15' viewBox='0 0 24 15' fill='none'%3E%3Cpath d='M22 12.5317L12 2.53174L2 12.5317' stroke='%2348484E' stroke-width='3.33333' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+
+
+
+
+        

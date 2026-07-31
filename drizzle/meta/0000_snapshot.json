@@ -1,0 +1,81 @@
+{
+  "id": "f150494c-5a61-4b1f-9ef7-562ec2d85679",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.sent_listings": {
+      "name": "sent_listings",
+      "schema": "",
+      "columns": {
+        "lagenhet_id": {
+          "name": "lagenhet_id",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "annons_id": {
+          "name": "annons_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bucket": {
+          "name": "bucket",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "address": {
+          "name": "address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "district": {
+          "name": "district",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deadline": {
+          "name": "deadline",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "first_sent_at": {
+          "name": "first_sent_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "raw": {
+          "name": "raw",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
