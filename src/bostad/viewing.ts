@@ -50,3 +50,14 @@ export function ageAdmitted(band: AgeBand, age: number): boolean {
   if (band.max != null && age > band.max) return false;
   return true;
 }
+
+/** Human-readable age band, e.g. "18–25 år", "endast 19 år", "från 20 år". */
+export function formatAgeBand(band: AgeBand): string {
+  const { min, max } = band;
+  if (min == null && max == null) return "ingen åldersgräns";
+  if (min != null && max != null) {
+    return min === max ? `endast ${min} år` : `${min}–${max} år`;
+  }
+  if (min != null) return `från ${min} år`;
+  return `upp till ${max} år`;
+}

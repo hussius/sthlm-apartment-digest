@@ -3,10 +3,13 @@ import type { getDb } from "../db/client.js";
 import { sentListings } from "../db/schema.js";
 import type { Listing } from "../bostad/schema.js";
 import type { Bucket } from "../filter/criteria.js";
+import type { AgeBand } from "../bostad/viewing.js";
 
 export interface DigestItem {
   listing: Listing;
   bucket: Bucket;
+  /** Advertised age band — populated for youth listings. */
+  ageBand?: AgeBand;
 }
 
 type Db = ReturnType<typeof getDb>;

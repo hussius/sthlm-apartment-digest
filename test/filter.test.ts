@@ -10,6 +10,7 @@ import {
   classifyViewing,
   parseAgeBand,
   ageAdmitted,
+  formatAgeBand,
 } from "../src/bostad/viewing.ts";
 import {
   isCentralCandidate,
@@ -79,6 +80,14 @@ test("ageAdmitted respects bounds; open ends are OK", () => {
   assert.ok(!ageAdmitted({ min: 20, max: 25 }, 19), "min 20 excludes 19");
   assert.ok(!ageAdmitted({ min: 18, max: 18 }, 19), "max 18 excludes 19");
   assert.ok(ageAdmitted({ min: null, max: null }, 19), "open band admits");
+});
+
+test("formatAgeBand renders ranges, single ages, and open ends", () => {
+  assert.equal(formatAgeBand({ min: 18, max: 25 }), "18–25 år");
+  assert.equal(formatAgeBand({ min: 19, max: 19 }), "endast 19 år");
+  assert.equal(formatAgeBand({ min: 20, max: null }), "från 20 år");
+  assert.equal(formatAgeBand({ min: null, max: 26 }), "upp till 26 år");
+  assert.equal(formatAgeBand({ min: null, max: null }), "ingen åldersgräns");
 });
 
 // --- normalize ---------------------------------------------------------------

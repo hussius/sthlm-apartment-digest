@@ -1,7 +1,21 @@
 import type { DigestItem } from "./dedupe.js";
 import type { Listing } from "../bostad/schema.js";
 import type { Bucket } from "../filter/criteria.js";
+import { formatAgeBand } from "../bostad/viewing.js";
 import { config } from "../config.js";
+
+const youthAge = config.criteria.youth.age;
+
+/** Age-band pill for a youth item, or "" for other buckets. */
+function ageBandHtml(item: DigestItem): string {
+  if (item.bucket !== "youth" || !item.ageBand) return "";
+  const label = formatAgeBand(item.ageBand);
+  // Highlight when the ad targets exactly the configured age (e.g. "endast 19 år").
+  const specific = item.ageBand.min === youthAge && item.ageBand.max === youthAge;
+  const bg = specific ? "#fde68a" : "#e0e7ff";
+  const fg = specific ? "#92400e" : "#3730a3";
+  return `<span style="display:inline-block;margin-left:8px;padding:1px 8px;border-radius:10px;background:${bg};color:${fg};font-size:12px;font-weight:600;vertical-align:middle;">${esc(label)}</span>`;
+}
 
 const baseUrl = config.bostad.baseUrl;
 
@@ -50,7 +64,7 @@ function itemHtml(item: DigestItem): string {
   return `
   <tr>
     <td style="padding:14px 0;border-bottom:1px solid #ececec;">
-      <a href="${href}" style="font-size:16px;font-weight:600;color:#1a56db;text-decoration:none;">${title}</a>
+      <a href="${href}" style="font-size:16px;font-weight:600;color:#1a56db;text-decoration:none;">${title}</a>${ageBandHtml(item)}
       <div style="margin-top:4px;font-size:14px;color:#111;">
         ${esc(fmtSize(l))} &nbsp;·&nbsp; <strong>${esc(fmtRent(l.rent))}</strong>
       </div>
@@ -142,11 +156,16 @@ function renderText(items: DigestItem[], dateLabel: string): string {
     const group = sortItems(s.bucket, items.filter((i) => i.bucket === s.bucket));
     lines.push(`== ${s.title} (${group.length}) ==`);
     if (group.length === 0) lines.push(`  ${s.empty}`);
-    for (const { listing: l } of group) {
+    for (const item of group) {
+      const l = item.listing;
       const meta = [fmtSize(l), fmtRent(l.rent), fmtQueue(l), fmtDeadline(l)]
         .filter(Boolean)
         .join(" · ");
-      lines.push(`  ${[l.address, l.district].filter(Boolean).join(", ")}`);
+      const age =
+        item.bucket === "youth" && item.ageBand
+          ? `  [${formatAgeBand(item.ageBand)}]`
+          : "";
+      lines.push(`  ${[l.address, l.district].filter(Boolean).join(", ")}${age}`);
       lines.push(`    ${meta}`);
       lines.push(`    ${baseUrl}${l.url}`);
     }

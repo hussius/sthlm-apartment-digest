@@ -111,8 +111,9 @@ async function main(): Promise<void> {
   }
   for (const l of youthCands) {
     const text = details.get(l.id) ?? "";
-    if (isYouthMatch(l, parseAgeBand(text))) {
-      items.push({ listing: l, bucket: "youth" });
+    const ageBand = parseAgeBand(text);
+    if (isYouthMatch(l, ageBand)) {
+      items.push({ listing: l, bucket: "youth", ageBand });
     }
   }
   for (const l of tempMatches) items.push({ listing: l, bucket: "temp" });
