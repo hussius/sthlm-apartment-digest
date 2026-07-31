@@ -3,7 +3,7 @@ import type { Listing } from "../bostad/schema.js";
 import { isCentral } from "./central-polygon.js";
 import { ageAdmitted, type AgeBand, type ViewingStatus } from "../bostad/viewing.js";
 
-export type Bucket = "central" | "youth" | "temp";
+export type Bucket = "central" | "youth" | "youth-range" | "temp";
 
 const c = config.criteria;
 
@@ -48,6 +48,23 @@ export function isYouthCandidate(listing: Listing): boolean {
 export function isYouthMatch(listing: Listing, band: AgeBand): boolean {
   if (!isYouthCandidate(listing)) return false;
   return ageAdmitted(band, c.youth.age);
+}
+
+/**
+ * Split youth matches into the primary bucket (listings targeting *exactly* the
+ * configured age — e.g. "endast 19 år", which have their own short internal
+ * queues) and a demoted "youth-range" bonus bucket (broader bands that admit
+ * the age but have prohibitively long queues). Returns null if not a match.
+ */
+export function youthBucketFor(
+  listing: Listing,
+  band: AgeBand,
+): "youth" | "youth-range" | null {
+  if (!isYouthCandidate(listing)) return null;
+  if (!ageAdmitted(band, c.youth.age)) return null;
+  return band.min === c.youth.age && band.max === c.youth.age
+    ? "youth"
+    : "youth-range";
 }
 
 /**

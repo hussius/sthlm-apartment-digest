@@ -8,7 +8,8 @@ const youthAge = config.criteria.youth.age;
 
 /** Age-band pill for a youth item, or "" for other buckets. */
 function ageBandHtml(item: DigestItem): string {
-  if (item.bucket !== "youth" || !item.ageBand) return "";
+  if ((item.bucket !== "youth" && item.bucket !== "youth-range") || !item.ageBand)
+    return "";
   const label = formatAgeBand(item.ageBand);
   // Highlight when the ad targets exactly the configured age (e.g. "endast 19 år").
   const specific = item.ageBand.min === youthAge && item.ageBand.max === youthAge;
@@ -73,16 +74,17 @@ function itemHtml(item: DigestItem): string {
   </tr>`;
 }
 
-const SECTIONS: { bucket: Bucket; title: string; empty: string }[] = [
-  { bucket: "central", title: "Centralt · innanför tullarna", empty: "Inga nya centrala bostäder idag." },
-  { bucket: "youth", title: "Ungdomsbostäder", empty: "Inga nya ungdomsbostäder idag." },
-  { bucket: "temp", title: "Korttid · bonus (centralt & billigt)", empty: "Inga nya korttidsbostäder idag." },
+const SECTIONS: { bucket: Bucket; title: string; empty: string; short: string }[] = [
+  { bucket: "central", title: "Centralt · innanför tullarna", empty: "Inga nya centrala bostäder idag.", short: "centralt" },
+  { bucket: "youth", title: `Ungdomsbostäder · endast ${youthAge} år`, empty: `Inga nya ${youthAge}-årsbostäder idag.`, short: `${youthAge}-års` },
+  { bucket: "temp", title: "Korttid · bonus (centralt & billigt)", empty: "Inga nya korttidsbostäder idag.", short: "korttid" },
+  { bucket: "youth-range", title: "Ungdom · bredare åldersspann (bonus — längre kötid)", empty: "Inga nya i bredare åldersspann idag.", short: "ungdom övrigt" },
 ];
 
 function sortItems(bucket: Bucket, items: DigestItem[]): DigestItem[] {
   const byRent = (a: DigestItem, b: DigestItem) =>
     (a.listing.rent ?? Infinity) - (b.listing.rent ?? Infinity);
-  if (bucket === "youth") {
+  if (bucket === "youth" || bucket === "youth-range") {
     return [...items].sort((a, b) => {
       const qa = a.listing.queueYears?.q1 ?? Infinity;
       const qb = b.listing.queueYears?.q1 ?? Infinity;
@@ -115,11 +117,14 @@ export function renderDigest(items: DigestItem[], dateLabel: string): RenderedDi
     sortItems(b, items.filter((i) => i.bucket === b));
 
   const total = items.length;
-  const counts = SECTIONS.map((s) => byBucket(s.bucket).length);
+  const breakdown = SECTIONS.map((s) => ({ short: s.short, n: byBucket(s.bucket).length }))
+    .filter((x) => x.n > 0)
+    .map((x) => `${x.n} ${x.short}`)
+    .join(", ");
   const subject =
     total === 0
       ? `Bostadsdigest ${dateLabel} — inga nya`
-      : `Bostadsdigest ${dateLabel} — ${total} nya (${counts[0]} centralt, ${counts[1]} ungdom, ${counts[2]} korttid)`;
+      : `Bostadsdigest ${dateLabel} — ${total} nya (${breakdown})`;
 
   const sectionsHtml = SECTIONS.map((s) =>
     sectionHtml(s.title, s.empty, byBucket(s.bucket)),
@@ -138,7 +143,7 @@ export function renderDigest(items: DigestItem[], dateLabel: string): RenderedDi
           <p style="margin:32px 0 0;font-size:12px;color:#aaa;line-height:1.5;">
             Centralt: ≥${config.criteria.central.minRooms} rok eller ≥${config.criteria.central.minSqm} m², ≤${config.criteria.central.maxRent.toLocaleString("sv-SE")} kr, med visning.
             Korttid visas endast om centralt och ≤${config.criteria.tempBonus.maxRent.toLocaleString("sv-SE")} kr.
-            Ungdom: åldersgräns tillåter ${config.criteria.youth.age} år.
+            Ungdomsbostäder för exakt ${youthAge} år (egen kort kö) visas som huvudträffar; bredare åldersspann hamnar i bonuslistan (längre kötid).
           </p>
         </td></tr>
       </table>
@@ -162,7 +167,7 @@ function renderText(items: DigestItem[], dateLabel: string): string {
         .filter(Boolean)
         .join(" · ");
       const age =
-        item.bucket === "youth" && item.ageBand
+        (item.bucket === "youth" || item.bucket === "youth-range") && item.ageBand
           ? `  [${formatAgeBand(item.ageBand)}]`
           : "";
       lines.push(`  ${[l.address, l.district].filter(Boolean).join(", ")}${age}`);

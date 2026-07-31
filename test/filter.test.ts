@@ -17,6 +17,7 @@ import {
   isCentralMatch,
   isYouthCandidate,
   isYouthMatch,
+  youthBucketFor,
   isTempBonusMatch,
 } from "../src/filter/criteria.ts";
 
@@ -125,6 +126,16 @@ test("youth candidates match when age band admits 19", () => {
   assert.ok(isYouthMatch(y1, { min: 18, max: 27 }));
   assert.ok(isYouthMatch(y2, { min: 18, max: 30 }));
   assert.ok(!isYouthMatch(y1, { min: 20, max: 27 }), "min 20 excludes 19");
+});
+
+test("youthBucketFor: only min=max=19 is primary; ranges are demoted", () => {
+  const y = byId(202612406);
+  assert.equal(youthBucketFor(y, { min: 19, max: 19 }), "youth", "exactly 19");
+  assert.equal(youthBucketFor(y, { min: 18, max: 27 }), "youth-range", "range");
+  assert.equal(youthBucketFor(y, { min: 18, max: 19 }), "youth-range", "18–19 is not 19-only");
+  assert.equal(youthBucketFor(y, { min: 19, max: 25 }), "youth-range", "19–25 is not 19-only");
+  assert.equal(youthBucketFor(y, { min: 20, max: 25 }), null, "excludes 19 → no bucket");
+  assert.equal(youthBucketFor(byId(202613865), { min: 19, max: 19 }), null, "non-youth");
 });
 
 test("non-youth listing is not a youth candidate", () => {

@@ -6,7 +6,7 @@ import {
   isCentralCandidate,
   isCentralMatch,
   isYouthCandidate,
-  isYouthMatch,
+  youthBucketFor,
   isTempBonusMatch,
   type Bucket,
 } from "./filter/criteria.js";
@@ -19,7 +19,7 @@ import { inArray } from "drizzle-orm";
 import { sentListings } from "./db/schema.js";
 
 /** Priority when a listing qualifies for more than one bucket. */
-const BUCKET_PRIORITY: Bucket[] = ["central", "youth", "temp"];
+const BUCKET_PRIORITY: Bucket[] = ["central", "youth", "youth-range", "temp"];
 
 function dateLabel(): string {
   return new Intl.DateTimeFormat("sv-SE", {
@@ -112,17 +112,16 @@ async function main(): Promise<void> {
   for (const l of youthCands) {
     const text = details.get(l.id) ?? "";
     const ageBand = parseAgeBand(text);
-    if (isYouthMatch(l, ageBand)) {
-      items.push({ listing: l, bucket: "youth", ageBand });
-    }
+    const bucket = youthBucketFor(l, ageBand);
+    if (bucket) items.push({ listing: l, bucket, ageBand });
   }
   for (const l of tempMatches) items.push({ listing: l, bucket: "temp" });
 
   const matches = dedupeBuckets(items);
+  const nBucket = (b: Bucket) => matches.filter((m) => m.bucket === b).length;
   console.log(
-    `Matches — central: ${matches.filter((m) => m.bucket === "central").length}, ` +
-      `youth: ${matches.filter((m) => m.bucket === "youth").length}, ` +
-      `temp: ${matches.filter((m) => m.bucket === "temp").length}`,
+    `Matches — central: ${nBucket("central")}, youth(19): ${nBucket("youth")}, ` +
+      `youth-range: ${nBucket("youth-range")}, temp: ${nBucket("temp")}`,
   );
 
   if (config.dryRun) {
