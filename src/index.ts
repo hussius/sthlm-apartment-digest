@@ -1,5 +1,5 @@
 import { mkdir, writeFile } from "node:fs/promises";
-import { config, assertRunnable } from "./config.js";
+import { config, assertRunnable, assertPreviewable } from "./config.js";
 import { fetchAllListings, fetchDetailText, sleep } from "./bostad/client.js";
 import type { Listing } from "./bostad/schema.js";
 import {
@@ -60,10 +60,10 @@ function dedupeBuckets(items: DigestItem[]): DigestItem[] {
 }
 
 async function main(): Promise<void> {
-  if (!config.dryRun) assertRunnable();
-  console.log(
-    `apt-scraper run — ${dateLabel()}${config.dryRun ? " [DRY RUN]" : ""}`,
-  );
+  if (config.preview) assertPreviewable();
+  else if (!config.dryRun) assertRunnable();
+  const mode = config.dryRun ? " [DRY RUN]" : config.preview ? " [PREVIEW]" : "";
+  console.log(`apt-scraper run — ${dateLabel()}${mode}`);
 
   const all = await fetchAllListings();
   console.log(`Fetched ${all.length} listings.`);
@@ -76,8 +76,9 @@ async function main(): Promise<void> {
   );
 
   // In a real run, skip detail fetches for listings we've already sent.
+  // Dry-run and preview don't touch the database at all.
   let alreadySent = new Set<number>();
-  const db = config.dryRun ? null : getDb();
+  const db = config.dryRun || config.preview ? null : getDb();
   if (db) {
     const ids = [
       ...new Set([
@@ -131,6 +132,15 @@ async function main(): Promise<void> {
     console.log(`\n${digest.text}\n`);
     console.log(`Subject: ${digest.subject}`);
     console.log("Wrote scratch/digest.html (DRY RUN — no email, no DB write).");
+    return;
+  }
+
+  if (config.preview) {
+    const digest = renderDigest(matches, dateLabel());
+    await sendDigest(digest);
+    console.log(
+      `Sent PREVIEW "${digest.subject}" (all ${matches.length} current matches, no DB write).`,
+    );
     return;
   }
 

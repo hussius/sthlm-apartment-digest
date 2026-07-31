@@ -39,6 +39,14 @@ DRY_RUN=1 npm run dev        # real fetch + filter, writes scratch/digest.html, 
 `DRY_RUN=1` prints the matches and writes the rendered email to
 `scratch/digest.html` without sending or touching the database.
 
+```bash
+PREVIEW=1 npm run dev   # emails ALL current matches, skips dedupe, no DB write
+```
+
+`PREVIEW=1` actually sends the email (needs the Resend vars) but ignores the
+"already sent" table and persists nothing — handy for seeing exactly what the
+digest looks like right now without affecting the daily dedupe.
+
 ## Configuration (env)
 
 | Var | Purpose |
