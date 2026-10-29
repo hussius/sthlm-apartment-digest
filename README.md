@@ -80,9 +80,10 @@ npm run db:migrate   # applies drizzle/0000_init.sql
 ## Deploy on Railway (daily cron)
 
 1. Push this repo to GitHub and create a Railway project from it.
-2. Railway reads [`railway.json`](railway.json): Nixpacks build (`npm run build`),
-   start `node dist/index.js`, cron `0 5 * * *` UTC, no restart.
-   - `0 5 * * *` UTC = **07:00** in summer (CEST) / **06:00** in winter (CET).
+2. Railway reads [`railway.json`](railway.json): Docker build (multi-stage
+   [`Dockerfile`](Dockerfile), `npm run build` then a slim runtime image),
+   start `node dist/index.js`, cron `15 8 * * *` UTC, no restart.
+   - `15 8 * * *` UTC = **10:15** in summer (CEST) / **09:15** in winter (CET).
      Railway cron is UTC-only, so adjust the hour if you want a fixed local time.
 3. Set the env vars from the table above in the Railway service
    (`DATABASE_URL`, `RESEND_API_KEY`, `DIGEST_FROM`, `DIGEST_TO`, `TZ`).
