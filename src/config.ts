@@ -14,6 +14,10 @@ loadEnv({ path: ".env.local", override: true });
 const numFromEnv = (v: string | undefined, fallback: number): number =>
   v === undefined || v === "" ? fallback : Number(v);
 
+/** "1"/"true"/"yes"/"on" (any case) are true; anything else, incl. "0" and unset, is false. */
+const boolFromEnv = (v: string | undefined): boolean =>
+  ["1", "true", "yes", "on"].includes((v ?? "").trim().toLowerCase());
+
 const EnvSchema = z.object({
   DATABASE_URL: z.string().optional(),
   RESEND_API_KEY: z.string().optional(),
@@ -27,9 +31,9 @@ const EnvSchema = z.object({
 const env = EnvSchema.parse(process.env);
 
 export const config = {
-  dryRun: Boolean(env.DRY_RUN),
+  dryRun: boolFromEnv(env.DRY_RUN),
   /** Send an email of ALL current matches without deduping or persisting. */
-  preview: Boolean(env.PREVIEW),
+  preview: boolFromEnv(env.PREVIEW),
   tz: env.TZ,
 
   db: {
@@ -69,9 +73,9 @@ export const config = {
        * Show the primary "endast {age} år" section. Off until explicitly
        * enabled (e.g. YOUTH_EXACT=1 YOUTH_AGE=20).
        */
-      exactEnabled: Boolean(process.env.YOUTH_EXACT),
+      exactEnabled: boolFromEnv(process.env.YOUTH_EXACT),
       /** Show the "bredare åldersspann" bonus section. Off until YOUTH_RANGE=1. */
-      rangeEnabled: Boolean(process.env.YOUTH_RANGE),
+      rangeEnabled: boolFromEnv(process.env.YOUTH_RANGE),
     },
   },
 } as const;
