@@ -65,6 +65,13 @@ export const config = {
     },
     youth: {
       age: numFromEnv(process.env.YOUTH_AGE, 19),
+      /**
+       * Show the primary "endast {age} år" section. Off until explicitly
+       * enabled (e.g. YOUTH_EXACT=1 YOUTH_AGE=20).
+       */
+      exactEnabled: Boolean(process.env.YOUTH_EXACT),
+      /** Show the "bredare åldersspann" bonus section. Off until YOUTH_RANGE=1. */
+      rangeEnabled: Boolean(process.env.YOUTH_RANGE),
     },
   },
 } as const;

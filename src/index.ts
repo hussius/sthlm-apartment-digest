@@ -69,7 +69,9 @@ async function main(): Promise<void> {
   console.log(`Fetched ${all.length} listings.`);
 
   const centralCands = all.filter(isCentralCandidate);
-  const youthCands = all.filter(isYouthCandidate);
+  // With both youth sections hidden, skip youth entirely (no detail fetches).
+  const { exactEnabled, rangeEnabled } = config.criteria.youth;
+  const youthCands = exactEnabled || rangeEnabled ? all.filter(isYouthCandidate) : [];
   const tempMatches = all.filter(isTempBonusMatch);
   console.log(
     `Candidates — central: ${centralCands.length}, youth: ${youthCands.length}, temp: ${tempMatches.length}`,
@@ -114,6 +116,9 @@ async function main(): Promise<void> {
     const text = details.get(l.id) ?? "";
     const ageBand = parseAgeBand(text);
     const bucket = youthBucketFor(l, ageBand);
+    // Skip (and don't record as sent) matches for a hidden section.
+    if (bucket === "youth" && !exactEnabled) continue;
+    if (bucket === "youth-range" && !rangeEnabled) continue;
     if (bucket) items.push({ listing: l, bucket, ageBand });
   }
   for (const l of tempMatches) items.push({ listing: l, bucket: "temp" });
@@ -121,8 +126,10 @@ async function main(): Promise<void> {
   const matches = dedupeBuckets(items);
   const nBucket = (b: Bucket) => matches.filter((m) => m.bucket === b).length;
   console.log(
-    `Matches — central: ${nBucket("central")}, youth(19): ${nBucket("youth")}, ` +
-      `youth-range: ${nBucket("youth-range")}, temp: ${nBucket("temp")}`,
+    `Matches — central: ${nBucket("central")}, ` +
+      (exactEnabled ? `youth(${config.criteria.youth.age}): ${nBucket("youth")}, ` : "") +
+      (rangeEnabled ? `youth-range: ${nBucket("youth-range")}, ` : "") +
+      `temp: ${nBucket("temp")}`,
   );
 
   if (config.dryRun) {

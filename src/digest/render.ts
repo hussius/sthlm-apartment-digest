@@ -5,6 +5,8 @@ import { formatAgeBand } from "../bostad/viewing.js";
 import { config } from "../config.js";
 
 const youthAge = config.criteria.youth.age;
+const { exactEnabled: youthExactEnabled, rangeEnabled: youthRangeEnabled } =
+  config.criteria.youth;
 
 /** Age-band pill for a youth item, or "" for other buckets. */
 function ageBandHtml(item: DigestItem): string {
@@ -74,12 +76,18 @@ function itemHtml(item: DigestItem): string {
   </tr>`;
 }
 
-const SECTIONS: { bucket: Bucket; title: string; empty: string; short: string }[] = [
+const ALL_SECTIONS: { bucket: Bucket; title: string; empty: string; short: string }[] = [
   { bucket: "central", title: "Centralt · innanför tullarna", empty: "Inga nya centrala bostäder idag.", short: "centralt" },
   { bucket: "youth", title: `Ungdomsbostäder · endast ${youthAge} år`, empty: `Inga nya ${youthAge}-årsbostäder idag.`, short: `${youthAge}-års` },
   { bucket: "temp", title: "Korttid · bonus (centralt & billigt)", empty: "Inga nya korttidsbostäder idag.", short: "korttid" },
   { bucket: "youth-range", title: "Ungdom · bredare åldersspann (bonus — längre kötid)", empty: "Inga nya i bredare åldersspann idag.", short: "ungdom övrigt" },
 ];
+
+const SECTIONS = ALL_SECTIONS.filter(
+  (s) =>
+    (s.bucket !== "youth" || youthExactEnabled) &&
+    (s.bucket !== "youth-range" || youthRangeEnabled),
+);
 
 function sortItems(bucket: Bucket, items: DigestItem[]): DigestItem[] {
   const byRent = (a: DigestItem, b: DigestItem) =>
@@ -112,7 +120,9 @@ export interface RenderedDigest {
   text: string;
 }
 
-export function renderDigest(items: DigestItem[], dateLabel: string): RenderedDigest {
+export function renderDigest(allItems: DigestItem[], dateLabel: string): RenderedDigest {
+  // Drop items belonging to hidden sections so counts match what's shown.
+  const items = allItems.filter((i) => SECTIONS.some((s) => s.bucket === i.bucket));
   const byBucket = (b: Bucket) =>
     sortItems(b, items.filter((i) => i.bucket === b));
 
@@ -143,7 +153,14 @@ export function renderDigest(items: DigestItem[], dateLabel: string): RenderedDi
           <p style="margin:32px 0 0;font-size:12px;color:#aaa;line-height:1.5;">
             Centralt: ≥${config.criteria.central.minRooms} rok eller ≥${config.criteria.central.minSqm} m², ≤${config.criteria.central.maxRent.toLocaleString("sv-SE")} kr, med visning.
             Korttid visas endast om centralt och ≤${config.criteria.tempBonus.maxRent.toLocaleString("sv-SE")} kr.
-            Ungdomsbostäder för exakt ${youthAge} år (egen kort kö) visas som huvudträffar; bredare åldersspann hamnar i bonuslistan (längre kötid).
+            ${[
+              youthExactEnabled
+                ? `Ungdomsbostäder för exakt ${youthAge} år (egen kort kö) visas som huvudträffar.`
+                : "",
+              youthRangeEnabled
+                ? `Ungdomsbostäder med bredare åldersspann som omfattar ${youthAge} år hamnar i bonuslistan (längre kötid).`
+                : "",
+            ].filter(Boolean).join(" ")}
           </p>
         </td></tr>
       </table>

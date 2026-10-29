@@ -60,6 +60,8 @@ digest looks like right now without affecting the daily dedupe.
 | `CENTRAL_MAX_RENT` / `CENTRAL_MIN_ROOMS` / `CENTRAL_MIN_SQM` | Central criteria overrides |
 | `TEMP_BONUS_MAX_RENT` | Korttid bonus rent cap |
 | `YOUTH_AGE` | Age used for the youth age-band check (default 19) |
+| `YOUTH_EXACT` | Set to `1` to show the "endast `YOUTH_AGE` år" section (hidden by default) |
+| `YOUTH_RANGE` | Set to `1` to show the broader youth age-range bonus section (hidden by default) |
 
 ### Email: quickest start with Resend
 
