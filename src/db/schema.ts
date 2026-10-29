@@ -9,7 +9,7 @@ import {
 
 /**
  * One row per listing we've already emailed, so the same ad never re-notifies
- * even while it lingers in /AllaAnnonser. Keyed by LägenhetId.
+ * even while it lingers in /AllaAnnonser. Keyed by LagenhetId.
  */
 export const sentListings = pgTable("sent_listings", {
   lagenhetId: bigint("lagenhet_id", { mode: "number" }).primaryKey(),

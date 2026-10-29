@@ -1,16 +1,33 @@
 import { z } from "zod";
 
 /**
+ * The API used to spell some keys with å/ä/ö (`LägenhetId`, `LägstaHyran`)
+ * and switched to ASCII (`LagenhetId`, `LagstaHyran`) in Oct 2026. Fold keys
+ * to ASCII before validating so either spelling parses.
+ */
+function foldKeys(input: unknown): unknown {
+  if (input === null || typeof input !== "object" || Array.isArray(input)) {
+    return input;
+  }
+  return Object.fromEntries(
+    Object.entries(input).map(([k, v]) => [
+      k.replace(/[åä]/g, "a").replace(/[ÅÄ]/g, "A").replace(/ö/g, "o").replace(/Ö/g, "O"),
+      v,
+    ]),
+  );
+}
+
+/**
  * Shape of one ad in GET /AllaAnnonser. The endpoint returns an array of these.
  * Only fields we rely on are validated; unknown fields are ignored.
  *
  * Note: for "bundled" ads (one ad = many similar units, `Antal` > 1) the
  * per-unit fields `Yta`/`Hyra` are null and the range fields
- * `LägstaHyran`/`HögstaYtan`/... carry the info instead.
+ * `LagstaHyran`/`HogstaYtan`/... carry the info instead.
  */
-export const RawListingSchema = z
+const RawListingObject = z
   .object({
-    "LägenhetId": z.number(),
+    LagenhetId: z.number(),
     AnnonsId: z.number(),
     Stadsdel: z.string().nullable().default(null),
     Gatuadress: z.string().nullable().default(null),
@@ -36,12 +53,12 @@ export const RawListingSchema = z
     Vanlig: z.boolean().default(false),
     KompisUngdom: z.boolean().default(false),
     Lagenhetstyp: z.string().nullable().default(null),
-    "LägstaHyran": z.number().nullable().default(null),
-    "HögstaHyran": z.number().nullable().default(null),
-    "LägstaYtan": z.number().nullable().default(null),
-    "HögstaYtan": z.number().nullable().default(null),
-    "LägstaAntalRum": z.number().nullable().default(null),
-    "HögstaAntalRum": z.number().nullable().default(null),
+    LagstaHyran: z.number().nullable().default(null),
+    HogstaHyran: z.number().nullable().default(null),
+    LagstaYtan: z.number().nullable().default(null),
+    HogstaYtan: z.number().nullable().default(null),
+    LagstaAntalRum: z.number().nullable().default(null),
+    HogstaAntalRum: z.number().nullable().default(null),
     LiknadeLagenhetStatistik: z
       .object({
         KotidFordelningQ1: z.number().nullable().default(null),
@@ -52,7 +69,9 @@ export const RawListingSchema = z
   })
   .passthrough();
 
-export type RawListing = z.infer<typeof RawListingSchema>;
+export const RawListingSchema = z.preprocess(foldKeys, RawListingObject);
+
+export type RawListing = z.infer<typeof RawListingObject>;
 
 export const ListListingsSchema = z.array(RawListingSchema);
 
@@ -91,12 +110,12 @@ export interface Listing {
 }
 
 export function normalize(raw: RawListing): Listing {
-  const rooms = raw.AntalRum ?? raw["HögstaAntalRum"] ?? raw["LägstaAntalRum"];
-  const sqm = raw.Yta ?? raw["HögstaYtan"] ?? raw["LägstaYtan"];
-  const rent = raw.Hyra ?? raw["LägstaHyran"] ?? raw["HögstaHyran"];
+  const rooms = raw.AntalRum ?? raw.HogstaAntalRum ?? raw.LagstaAntalRum;
+  const sqm = raw.Yta ?? raw.HogstaYtan ?? raw.LagstaYtan;
+  const rent = raw.Hyra ?? raw.LagstaHyran ?? raw.HogstaHyran;
   const stat = raw.LiknadeLagenhetStatistik;
   return {
-    id: raw["LägenhetId"],
+    id: raw.LagenhetId,
     annonsId: raw.AnnonsId,
     address: raw.Gatuadress ?? "",
     district: raw.Stadsdel ?? "",

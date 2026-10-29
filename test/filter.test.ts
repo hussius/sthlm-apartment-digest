@@ -99,6 +99,13 @@ test("normalize falls back to range fields for bundled ads", () => {
   assert.equal(senior.flags.senior, true);
 });
 
+test("normalize accepts both å/ä/ö and ASCII key spellings", () => {
+  const ascii: Listing[] = JSON.parse(readFx("listings-sample-ascii.json")).map(
+    (r: unknown) => normalize(RawListingSchema.parse(r)),
+  );
+  assert.deepEqual(ascii, sample);
+});
+
 // --- Criteria: central -------------------------------------------------------
 test("central: viewable Södermalm 89m² matches only when viewable", () => {
   const soder = byId(202613865);
